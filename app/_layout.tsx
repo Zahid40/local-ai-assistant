@@ -14,6 +14,8 @@ import { NAV_THEME } from "😎/lib/constants";
 import { useColorScheme } from "😎/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "😎/lib/queryClient";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -52,22 +54,26 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <GestureHandlerRootView>
-        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-        <Stack screenOptions={{
-          headerStyle: {
-            backgroundColor: NAV_THEME[colorScheme].background,
-          },
-          headerTintColor: NAV_THEME[colorScheme].text,
-          contentStyle: {
-            backgroundColor: NAV_THEME[colorScheme].background,
-          },
-          headerShadowVisible: false,
-        }} />
-        <PortalHost />
+    <QueryClientProvider client={queryClient}>
+      <GestureHandlerRootView className="flex-1">
+        <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+          <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+          <Stack
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: NAV_THEME[colorScheme].background,
+              },
+              headerTintColor: NAV_THEME[colorScheme].text,
+              contentStyle: {
+                backgroundColor: NAV_THEME[colorScheme].background,
+              },
+              headerShadowVisible: false,
+            }}
+          />
+          <PortalHost />
+        </ThemeProvider>
       </GestureHandlerRootView>
-    </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 
